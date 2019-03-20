@@ -1,23 +1,19 @@
 puts "Введите стороны треугольника"
-a = gets.to_i
-b = gets.to_i
-c = gets.to_i
+a = gets.to_f
+b = gets.to_f
+c = gets.to_f
 rectangular = false
 
-rectangular =
-  if a > c && a > b
-    (a**2 == b**2 + c**2)
-  elsif b > c && b > a
-    (b**2 == a**2 + c**2)
-  elsif c > a && c > b
-    (c**2 == a**2 + b**2)
-  end
+x1 = [a,b,c].max
+x2,x3 = [a,b,c].min(2)
 
-if rectangular && (a == b || b == c || c == a)
+rectangular = x1**2 == x2**2 + x3**2
+
+if rectangular && (x2 == x3)
   puts "треугольник прямоугольный и равнобедренный"
 elsif rectangular
   puts "треугольник прямоугольный"
-elsif a == b && b == c
+elsif x1 == x2 && x2 == x3
   puts "треугольник равностронний"
 else
   puts "треугольник непрямоугольный"
