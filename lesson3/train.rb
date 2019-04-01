@@ -1,0 +1,73 @@
+class Train
+  attr_reader :count_wagons, :type, :speed, :route, :number
+
+  def initialize(number, type, count_wagons)
+    @number = number
+    @type = type
+    @count_wagons = count_wagons
+    @speed = 0
+  end
+
+  def stop
+    self.speed = 0
+  end
+
+  def attach_wagon
+    @count_wagons += 1 if speed == 0
+  end
+
+  def detach_wagon
+    if (speed == 0 && count_wagons > 0)
+        @count_wagons -= 1
+    end
+  end
+
+  def set_route(route)
+    route.stations[0].add_train(self)
+    @index_station = 0
+    @route = route
+  end
+
+  def current_station
+    route.stations[@index_station]
+  end
+
+  def speed_up(count)
+    @speed += count
+  end
+
+  def deceleration(count)
+    @speed =
+      if (count < speed)
+          @speed - count
+        else
+          0
+      end
+  end
+
+  def drive_forward
+    next_station = self.next_station
+    if next_station
+      current_station.send_train(self)
+      next_station.add_train(self)
+      @index_station += 1
+    end
+  end
+
+  def drive_back
+    prev_station = self.prev_station
+    if prev_station
+      current_station.send_train(self)
+      prev_station.add_train(self)
+      @index_station -= 1
+    end
+  end
+
+  def prev_station
+    route.stations[@index_station - 1] if @index_station > 0
+  end
+
+  def next_station
+    route.stations[@index_station + 1]
+  end
+end
