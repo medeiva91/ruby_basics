@@ -1,14 +1,21 @@
 class Station
+  include InstanceCounter
   attr_reader :trains, :name
 
   def initialize(name)
     @trains = []
     @name = name
+    register_instance
+  end
+
+  def self.all
+    instances
   end
 
   def add_train(train)
     trains.push(train)
   end
+
 
   def train_with_type(type)
     trains.select { |train|  train.type == type  }

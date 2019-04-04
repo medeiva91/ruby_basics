@@ -1,15 +1,24 @@
 class Train
+  include InstanceCounter
   attr_reader :type, :speed, :route, :number, :wagons
+
+  @@trains = []
 
   def initialize(number, type)
     @number = number
     @type = type
     @wagons = []
     @speed = 0
+    @@trains[number.to_s.to_sym] = self
+    register_instance
   end
 
   def stop
     self.speed = 0
+  end
+
+  def self.find(number)
+    @@trains[number.to_s.to_sym]
   end
 
   def attach_wagon(wagon)

@@ -116,7 +116,7 @@ class RailRoad
         wagon = get_wagon(train)
         train.attach_wagon(wagon)
       when 2
-        @wagons.push(train.detach_wagon)
+        @wagons << train.detach_wagon
       when 3
         train.drive_forward
       when 4
@@ -171,7 +171,7 @@ class RailRoad
   def create_station
     puts "Введите название станции"
     name = gets.chomp
-    @stations.push(Station.new(name))
+    @stations << Station.new(name)
   end
 
   def create_train
@@ -185,7 +185,7 @@ class RailRoad
               PassengerTrain.new(number)
             end
     puts "Поезд #{number} создан"
-    @trains.push(train)
+    @trains << train
   end
 
   def get_wagon(train)
