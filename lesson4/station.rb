@@ -1,5 +1,7 @@
 class Station
   include InstanceCounter
+  include Validate
+
   attr_reader :trains, :name
 
   @@stations = []
@@ -8,6 +10,7 @@ class Station
     @trains = []
     @name = name
     @@stations << self
+    validate!
     register_instance
   end
 
@@ -26,5 +29,11 @@ class Station
 
   def send_train(train, next_station)
     trains.delete(train)
+  end
+
+  protected
+
+  def validate!
+    raise "Name can't be nil" if name.nil?
   end
 end

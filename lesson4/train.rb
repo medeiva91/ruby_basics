@@ -1,8 +1,10 @@
 class Train
   include InstanceCounter
+  include Validate
   attr_reader :type, :speed, :route, :number, :wagons
 
   @@trains = {}
+  NUMBER_FORMAT = /^[а-яa-z0-9]{3}-*[а-яa-z0-9]{2}$/i
 
   def initialize(number, type)
     @number = number
@@ -10,6 +12,7 @@ class Train
     @wagons = []
     @speed = 0
     @@trains[number.to_s.to_sym] = self
+    validate!
     register_instance
   end
 
@@ -71,6 +74,9 @@ class Train
     route.stations[@index_station + 1] if route.stations[@index_station + 1]
   end
 
-
+  def validate!
+    raise "Number can't be nil" if number.nil?
+    raise "Number has invalid format" if number !~ NUMBER_FORMAT
+  end
 
 end
