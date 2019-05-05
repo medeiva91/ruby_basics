@@ -72,29 +72,30 @@ class RailRoad
   end
 
   def display_info
-    loop do
-      puts "Введите 1, если хотите посмотреть список станций"
-      puts "Введите 2, если вы хотите список поездов на станции"
-      puts "Введите 0, если вернуться в главное меню"
-      choise = gets.to_i
-      if choise == 1
-        display_stations
-      elsif choise == 2
-        display_stations
-        puts "Введите номер станции, список поездов на которой хотите посмотреть"
-        station = @stations[gets.to_i]
-        station.each_train do |train|
-          puts "Номер: #{train.number}"
-          puts "Тип поезда - #{train.type}"
-          puts "Кол-во вагонов - #{train.wagons.size}"
-          train.each_wagon do |wagon, index|
-            puts "#{index} - тип вагона #{wagon.type}"
+    puts "Введите 1, если хотите посмотреть список станций"
+    puts "Введите 2, если вы хотите список поездов на станции"
+    puts "Введите любую другую цифру, если не хотите смотреть информацию"
+    choise = gets.to_i
+    if choise == 1
+      display_stations
+    elsif choise == 2
+      display_stations
+      puts "Введите номер станции, список поездов на которой хотите посмотреть"
+      station = @stations[gets.to_i]
+      station.each_train do |train|
+        puts "Номер: #{train.number}"
+        puts "Тип поезда - #{train.type}"
+        puts "Кол-во вагонов - #{train.wagons.size}"
+        train.each_wagon do |wagon, index|
+          puts "#{index} - тип вагона #{wagon.type}"
+          if wagon.type == :cargo
+            puts "количество свободного объема #{wagon.taken_volume}"
+            puts "количество занятого объема #{wagon.free_volume}"
+          elsif wagon.type == :passenger
+            puts "количество свободных мест #{wagon.taken_volume}"
+            puts "количество занятых мест #{wagon.free_volume}"
           end
         end
-      elsif choise == 0
-        break
-      else
-        puts "Вы ввели неправильное число"
       end
     end
   end
@@ -195,9 +196,29 @@ class RailRoad
 
   def get_wagon(train)
     if train.type == :passenger
-        PassengerWagon.new()
+      puts "Введите количество мест в вагоне"
+      value = gets.to_i
+      existing_wagon = @wagons.select do |wagon|
+        wagon.type == train.type && wagon.total_places == value
+      end
+      if existing_wagon.size > 0
+        existing_wagon[0].set_to_zero
+        existing_wagon[0]
+      else
+        PassengerWagon.new(value)
+      end
     elsif train.type == :cargo
-        CargoWagon.new()
+      puts "Введите объем вагона"
+      value = gets.to_i
+      existing_wagon = @wagons.select do |wagon|
+        wagon.type == train.type && wagon.total_volume == value
+      end
+      if !existing_wagon.size.empty?
+        existing_wagon[0].set_to_zero
+        existing_wagon[0]
+      else
+        CargoWagon.new(value)
+      end
     end
   end
 

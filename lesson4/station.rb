@@ -9,8 +9,8 @@ class Station
   def initialize(name)
     @trains = []
     @name = name
-    @@stations << self
     validate!
+    @@stations << self
     register_instance
   end
 
@@ -22,13 +22,16 @@ class Station
     trains.push(train)
   end
 
-
   def train_with_type(type)
     trains.select { |train|  train.type == type  }
   end
 
   def send_train(train, next_station)
     trains.delete(train)
+  end
+
+  def each_train
+    @trains.each { |train| yield(train) }
   end
 
   protected

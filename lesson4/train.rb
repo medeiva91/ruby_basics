@@ -11,8 +11,8 @@ class Train
     @type = type
     @wagons = []
     @speed = 0
-    @@trains[number.to_s.to_sym] = self
     validate!
+    @@trains[number.to_s.to_sym] = self
     register_instance
   end
 
@@ -73,6 +73,12 @@ class Train
   def next_station
     route.stations[@index_station + 1] if route.stations[@index_station + 1]
   end
+
+  def each_wagon
+    @wagons.each_with_index { |wagon, index| yield(wagon, index) }
+  end
+
+  protected
 
   def validate!
     raise "Number can't be nil" if number.nil?
