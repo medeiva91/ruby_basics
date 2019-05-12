@@ -12,10 +12,20 @@ class Wagon
   end
 
   def add_taken_place(value)
-    @taken_volume += value
+    if has_free_volume?
+      @taken_volume += value
+    end
   end
 
   def free_volume
     total_volume - taken_volume
+  end
+
+  def has_free_volume?(value)
+    if free_volume >= value
+      true
+    else
+      false
+    end
   end
 end

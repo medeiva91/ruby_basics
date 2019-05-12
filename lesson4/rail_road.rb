@@ -110,6 +110,7 @@ class RailRoad
       puts "Введите 3, если хотите переместить поезд на следующую станцию"
       puts "Введите 4, если хотите переместить поезд на предыдущую станцию"
       puts "Введите 5, если хотите назначить поезду маршрут"
+      puts "Введите 6, занять место или объем в вагоне"
       puts "Введите 0, если вернуться в главное меню"
       choise = gets.to_i
       case choise
@@ -127,6 +128,8 @@ class RailRoad
         puts "Введите порядковый номер маршрута, c которым хотите совершить операцию"
         route = @routes[gets.to_i]
         train.set_route(route)
+      when 6
+        add_taken_place_wagon(train)
       when 0
         break
       else
@@ -198,28 +201,32 @@ class RailRoad
     if train.type == :passenger
       puts "Введите количество мест в вагоне"
       value = gets.to_i
-      existing_wagon = @wagons.select do |wagon|
-        wagon.type == train.type && wagon.total_places == value
-      end
-      if existing_wagon.size > 0
-        existing_wagon[0].set_to_zero
-        existing_wagon[0]
-      else
-        PassengerWagon.new(value)
-      end
+      PassengerWagon.new(value)
     elsif train.type == :cargo
       puts "Введите объем вагона"
       value = gets.to_i
-      existing_wagon = @wagons.select do |wagon|
-        wagon.type == train.type && wagon.total_volume == value
-      end
-      if !existing_wagon.size.empty?
-        existing_wagon[0].set_to_zero
-        existing_wagon[0]
-      else
-        CargoWagon.new(value)
-      end
+      CargoWagon.new(value)
     end
+  end
+
+  def add_taken_place_wagon(train)
+     wagon = get_wagon(train)
+     if train.type == :passenger
+       if wagon.has_free_volume?(1)
+         wagon.add_taken_place(1)
+       else
+         puts "в вагоне нет свободного места"
+       end
+     elsif train.type == :cargo
+       puts "Введите объем, который хотите занять в вагоне"
+       value = gets.to_i
+       if wagon.has_free_volume?(value)
+         wagon.add_taken_place(value)
+       else
+         puts "в вагоне нет свободного места"
+       end
+
+     end
   end
 
   def create_route
