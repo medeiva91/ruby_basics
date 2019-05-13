@@ -101,10 +101,10 @@ class RailRoad
   end
 
   def actions_train
+    display_trains
+    puts "Введите порядковый номер поезда, c которым хотите совершить операцию"
+    train = @trains[gets.to_i - 1]
     loop do
-      display_trains
-      puts "Введите порядковый номер поезда, c которым хотите совершить операцию"
-      train = @trains[gets.to_i - 1]
       puts "Введите 1, если хотите добавить вагон к поезду"
       puts "Введите 2, если вы хотите удалить вагон"
       puts "Введите 3, если хотите переместить поезд на следующую станцию"
@@ -213,7 +213,7 @@ class RailRoad
      wagon = get_wagon(train)
      if train.type == :passenger
        if wagon.has_free_volume?(1)
-         wagon.add_taken_place(1)
+         wagon.add_taken_place
        else
          puts "в вагоне нет свободного места"
        end

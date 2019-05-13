@@ -12,7 +12,7 @@ class Wagon
   end
 
   def add_taken_place(value)
-    if has_free_volume?
+    if has_free_volume?(value)
       @taken_volume += value
     end
   end
@@ -22,10 +22,6 @@ class Wagon
   end
 
   def has_free_volume?(value)
-    if free_volume >= value
-      true
-    else
-      false
-    end
+    free_volume >= value
   end
 end
