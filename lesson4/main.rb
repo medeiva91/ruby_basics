@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'modules/info'
 require_relative 'modules/instance_counter'
 require_relative 'modules/validate'
@@ -11,7 +13,7 @@ require_relative 'cargo_wagon'
 require_relative 'passenger_wagon'
 require_relative 'rail_road'
 
-puts "Привет, это программа - абстракция железной дороги"
+puts 'Привет, это программа - абстракция железной дороги'
 
 road = RailRoad.new
 road.menu

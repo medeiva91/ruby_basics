@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Station
   include InstanceCounter
   include Validate
@@ -23,10 +25,10 @@ class Station
   end
 
   def train_with_type(type)
-    trains.select { |train|  train.type == type  }
+    trains.select { |train| train.type == type }
   end
 
-  def send_train(train, next_station)
+  def send_train(train, _next_station)
     trains.delete(train)
   end
 

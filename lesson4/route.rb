@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Route
   include InstanceCounter
   include Validate
@@ -38,5 +40,4 @@ class Route
     raise 'End_station is not Station' unless end_station.class == Station
     raise 'End_station can not = start_station' if start_station == end_station
   end
-
 end

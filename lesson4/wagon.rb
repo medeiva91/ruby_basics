@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Wagon
   include Info
   attr_reader :type, :total_volume, :taken_volume
@@ -12,9 +14,7 @@ class Wagon
   end
 
   def add_taken_place(value)
-    if has_free_volume?(value)
-      @taken_volume += value
-    end
+    @taken_volume += value if has_free_volume?(value)
   end
 
   def free_volume
