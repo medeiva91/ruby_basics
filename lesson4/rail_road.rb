@@ -84,20 +84,28 @@ class RailRoad
       display_stations
       puts 'Введите номер станции, список поездов на которой хотите посмотреть'
       station = @stations[gets.to_i]
-      station.each_train do |train|
-        puts "Номер: #{train.number}"
-        puts "Тип поезда - #{train.type}"
-        puts "Кол-во вагонов - #{train.wagons.size}"
-        train.each_wagon do |wagon, index|
-          puts "#{index} - тип вагона #{wagon.type}"
-          if wagon.type == :cargo
-            puts "количество свободного объема #{wagon.taken_volume}"
-            puts "количество занятого объема #{wagon.free_volume}"
-          elsif wagon.type == :passenger
-            puts "количество свободных мест #{wagon.taken_volume}"
-            puts "количество занятых мест #{wagon.free_volume}"
-          end
-        end
+      display_train_in(station)
+    end
+  end
+
+  def display_trains_in(station)
+    station.each_train do |train|
+      puts "Номер: #{train.number}"
+      puts "Тип поезда - #{train.type}"
+      puts "Кол-во вагонов - #{train.wagons.size}"
+      display_train(train)
+    end
+  end
+
+  def display_train(train)
+    train.each_wagon do |wagon, index|
+      puts "#{index} - тип вагона #{wagon.type}"
+      if wagon.type == :cargo
+        puts "количество свободного объема #{wagon.taken_volume}"
+        puts "количество занятого объема #{wagon.free_volume}"
+      elsif wagon.type == :passenger
+        puts "количество свободных мест #{wagon.taken_volume}"
+        puts "количество занятых мест #{wagon.free_volume}"
       end
     end
   end
@@ -107,32 +115,26 @@ class RailRoad
     puts 'Введите порядковый номер поезда, c которым хотите совершить операцию'
     train = @trains[gets.to_i - 1]
     loop do
-      puts 'Введите 1, если хотите добавить вагон к поезду'
-      puts 'Введите 2, если вы хотите удалить вагон'
-      puts 'Введите 3, если хотите переместить поезд на следующую станцию'
-      puts 'Введите 4, если хотите переместить поезд на предыдущую станцию'
-      puts 'Введите 5, если хотите назначить поезду маршрут'
-      puts 'Введите 6, занять место или объем в вагоне'
-      puts 'Введите 0, если вернуться в главное меню'
+      display_options_actions
       choise = gets.to_i
-      case choise
-      when 1
+      if choise == 1
         wagon = get_wagon(train)
         train.attach_wagon(wagon)
-      when 2
+      elsif choise == 2
         @wagons << train.detach_wagon
-      when 3
+      elsif choise == 3
         train.drive_forward
-      when 4
+      elsif choise == 4
         train.drive_back
-      when 5
+      elsif choise == 5
         display_routes
-        puts 'Введите порядковый номер маршрута, c которым хотите совершить операцию'
+        puts 'Введите порядковый номер маршрута,
+              c которым хотите совершить операцию'
         route = @routes[gets.to_i]
-        train.set_route(route)
-      when 6
+        train.add_route(route)
+      elsif choise == 6
         add_taken_place_wagon(train)
-      when 0
+      elsif choise.zero?
         break
       else
         puts 'Вы ввели неправильное число'
@@ -140,15 +142,20 @@ class RailRoad
     end
   end
 
+  def display_options_actions
+    puts 'Введите 1, если хотите добавить вагон к поезду'
+    puts 'Введите 2, если вы хотите удалить вагон'
+    puts 'Введите 3, если хотите переместить поезд на следующую станцию'
+    puts 'Введите 4, если хотите переместить поезд на предыдущую станцию'
+    puts 'Введите 5, если хотите назначить поезду маршрут'
+    puts 'Введите 6, занять место или объем в вагоне'
+    puts 'Введите 0, если вернуться в главное меню'
+  end
+
   def actions_route
     loop do
       display_routes
-      puts 'Введите порядковый номер маршрута, c которым хотите совершить операцию'
-      route = @routes[gets.to_i]
-      puts 'Введите 1, если хотите добавить станцию к маршруту'
-      puts 'Введите 2, если вы хотите удалить станцию из маршрута'
-      puts 'Введите 3, если хотите назначить поезду маршрут'
-      puts 'Введите 0, если вернуться в главное меню'
+      route = display_option_route
       choise = gets.to_i
       case choise
       when 1
@@ -163,15 +170,27 @@ class RailRoad
         route.delete_station(station)
       when 3
         display_trains
-        puts 'Введите порядковый номер поезда, которуму хотите назначить маршрут'
+        puts 'Введите порядковый номер поезда, которуму
+              хотите назначить маршрут'
         train = @trains[gets.to_i]
-        train.set_route(route)
+        train.add_route(route)
       when 0
         break
       else
         puts 'Вы ввели неправильное число'
       end
     end
+  end
+
+  def display_option_route
+    puts 'Введите порядковый номер маршрута,
+          c которым хотите совершить операцию'
+    route = @routes[gets.to_i]
+    puts 'Введите 1, если хотите добавить станцию к маршруту'
+    puts 'Введите 2, если вы хотите удалить станцию из маршрута'
+    puts 'Введите 3, если хотите назначить поезду маршрут'
+    puts 'Введите 0, если вернуться в главное меню'
+    route
   end
 
   def create_station
@@ -213,21 +232,12 @@ class RailRoad
 
   def add_taken_place_wagon(train)
     wagon = get_wagon(train)
-    if train.type == :passenger
-      if wagon.has_free_volume?(1)
-        wagon.add_taken_place
-      else
-        puts 'в вагоне нет свободного места'
-      end
+    if train.type == :passenger && wagon.has_free_volume?(1)
+      wagon.add_taken_place
     elsif train.type == :cargo
       puts 'Введите объем, который хотите занять в вагоне'
       value = gets.to_i
-      if wagon.has_free_volume?(value)
-        wagon.add_taken_place(value)
-      else
-        puts 'в вагоне нет свободного места'
-      end
-
+      wagon.add_taken_place(value) if wagon.has_free_volume?(value)
     end
   end
 

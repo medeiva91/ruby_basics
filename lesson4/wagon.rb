@@ -21,7 +21,7 @@ class Wagon
     total_volume - taken_volume
   end
 
-  def has_free_volume?(value)
+  def free_volume?(value)
     free_volume >= value
   end
 end

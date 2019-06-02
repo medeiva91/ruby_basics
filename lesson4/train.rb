@@ -34,7 +34,7 @@ class Train
     @wagons.pop if speed.zero? && !@wagons.empty?
   end
 
-  def set_route(route)
+  def add_route(route)
     route.stations[0].add_train(self)
     @index_station = 0
     @route = route
@@ -53,19 +53,19 @@ class Train
   end
 
   def drive_forward
-    if next_station
-      current_station.send_train(self)
-      next_station.add_train(self)
-      @index_station += 1
-    end
+    return unless next_station
+
+    current_station.send_train(self)
+    next_station.add_train(self)
+    @index_station += 1
   end
 
   def drive_back
-    if prev_station
-      current_station.send_train(self)
-      prev_station.add_train(self)
-      @index_station -= 1
-    end
+    return unless prev_station
+
+    current_station.send_train(self)
+    prev_station.add_train(self)
+    @index_station -= 1
   end
 
   def prev_station
